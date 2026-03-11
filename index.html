@@ -162,6 +162,30 @@
         padding: 40px;
         color: var(--muted);
       }
+
+      #search-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      #search-input {
+        width: 300px;
+        padding: 8px 12px;
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #555;
+        background-color: #222;
+        color: #eee;
+      }
+
+      #search-btn {
+        padding: 8px 12px;
+        border-radius: 0 8px 8px 0;
+        border: 1px solid #555;
+        background-color: #38bdf8;
+        color: #111;
+        cursor: pointer;
+      }
     </style>
   </head>
 
@@ -174,7 +198,8 @@
     <div class="container">
       <div id="todayPanel" class="today"></div>
 
-      <div id="trip"></div>
+      <div id="search"></d"></div>
+      <div id="trip"></d"></div>
     </div>
 
     <footer>Campervan Journey</footer>
@@ -754,59 +779,70 @@ ${todayDay.stops.map((s) => `<li>${s.time} — ${s.place}</li>`).join("")}
 
         const div = document.createElement("div");
         div.className = "day";
+        div.id = `day-${i}`
 
         if (date < today) div.classList.add("past");
         if (d.date === todayStr) div.classList.add("today");
 
         div.innerHTML = `
 
-<div class="day-header">
+                <div class="day-header">
 
-<div>
-<strong>${date.toDateString()}</strong><br>
-${d.title}
-</div>
+                <div>
+                <strong>${date.toDateString()}</strong><br>
+                ${d.title}
+                </div>
 
-<div>▼</div>
+                <div>▼</div>
 
-</div>
+                </div>
 
-<div class="day-content">
+                <div class="day-content">
 
-<div class="image" style="background-image:url('${d.image}')"></div>
+                <div class="image" style="background-image:url('${d.image}')"></div>
 
-<div id="map${i}" class="day-map"></div>
+                <div id="map${i}" class="day-map"></div>
 
-${d.stops
-  .map(
-    (s) => `
+                ${d.stops
+                  .map(
+                    (s) => `
 
-<div class="stop">
+                <div class="stop">
 
-<div class="time">${s.time}</div>
+                <div class="time">${s.time}</div>
 
-<div>
+                <div>
 
-<div>${s.place}</div>
-<div class="notes">${s.notes.replace(/\n/g, "<br>")}</div>
+                <div>${s.place}</div>
+                <div class="notes">${s.notes.replace(/\n/g, "<br>")}</div>
 
-<div class="nav">
-<a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lon}" target="_blank">
-Navigate
-</a>
-</div>
+                <div class="nav">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lon}" target="_blank">
+                Navigate
+                </a>
+                </div>
 
-</div>
+                </div>
 
-</div>
+                </div>
 
-`,
-  )
-  .join("")}
+                `,
+                  )
+                  .join("")}
 
-</div>
+                </div>
 
-`;
+          `;
+
+        const search = document.getElementById("search");
+        const searchBox = `
+        <div id="search-container">
+          <input type="text" id="search-input" placeholder="Search itinerary..." />
+          <button id="search-btn">🔍</button>
+        </div>
+        `
+
+        search.innerHTML = searchBox;
 
         container.appendChild(div);
 
@@ -839,6 +875,50 @@ Navigate
           }
         };
       });
+
+      const searchInput = document.getElementById("search-input");
+      const searchBtn = document.getElementById("search-btn");
+
+      searchBtn.addEventListener("click", () => {
+        const query = searchInput.value.toLowerCase();
+        if (!query) return;
+
+        // Find the first matching day/stop
+        for (let i = 0; i < days.length; i++) {
+          const day = days[i];
+          const dayText = day.title.toLowerCase();
+          if (dayText.includes(query)) {
+            document
+              .getElementById(`day-${i}`)
+              .scrollIntoView({ behavior: "smooth" });
+            highlightDay(i);
+            return;
+          }
+
+          for (let j = 0; j < day.stops.length; j++) {
+            const stop = day.stops[j];
+            const stopText = (stop.place + " " + stop.notes).toLowerCase();
+            if (stopText.includes(query)) {
+              document
+                .getElementById(`day-${i}`)
+                .scrollIntoView({ behavior: "smooth" });
+              highlightDay(i);
+              return;
+            }
+          }
+        }
+
+        alert("No matches found!");
+      });
+
+      // Optional: Highlight the day when search hits
+      function highlightDay(dayIndex) {
+        const dayDiv = document.getElementById(`day-${dayIndex}`);
+        dayDiv.style.border = "2px solid #38bdf8";
+        setTimeout(() => {
+          dayDiv.style.border = "none";
+        }, 2000);
+      }
     </script>
   </body>
 </html>
