@@ -116,7 +116,7 @@
 
       .stop {
         display: grid;
-        grid-template-columns: 90px 1fr;
+        grid-template-columns: 60px 1fr;
         gap: 15px;
         padding: 10px 0;
         border-left: 2px solid var(--border);
@@ -788,6 +788,7 @@ ${d.stops
 <div>
 
 <div>${s.place}</div>
+<div class="notes">${s.notes.replace(/\n/g, "<br>")}</div>
 
 <div class="nav">
 <a href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lon}" target="_blank">
