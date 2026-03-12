@@ -189,6 +189,51 @@
       border-radius: 12px;
       margin-bottom: 30px;
     }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: black;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .pack-list {
+      line-height: 1.8;
+    }
+
+    .booking {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .booking-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 
@@ -199,15 +244,94 @@
   </header>
 
   <div class="container">
-    <div id="todayPanel" class="today"></div>
+    <div class="tabs">
 
-    <div id="fullTripMap"></div>
-    <div id="search">
-      </d">
+      <button class="tab active" data-tab="plan">Trip Plan</button>
+      <button class="tab" data-tab="prep">Preparation</button>
+
     </div>
-    <div id="trip">
-      </d">
+
+    <div id="tab-plan" class="tab-content active">
+
+      <div id="todayPanel" class="today"></div>
+
+      <div id="search"></div>
+      <div id="fullTripMap"></div>
+      <div id="trip"></div>
+
     </div>
+
+    <div id="tab-prep" class="tab-content">
+
+      <h2>Things to Pack</h2>
+
+      <ul class="pack-list">
+        <li>Passport</li>
+        <li>Driver License</li>
+        <li>Waterproof jacket</li>
+        <li>Hiking boots</li>
+        <li>Thermal layers</li>
+        <li>Heat patches</li>
+        <li>Gloves & hat</li>
+        <li>Camera gear</li>
+        <li>Power banks</li>
+        <li>Car charger</li>
+        <li>Reusable water bottle</li>
+      </ul>
+
+      <h2>Things to Book</h2>
+
+      <div class="booking">
+
+        <div class="booking-item">
+          <strong>Blue Lagoon</strong><br>
+          📅 July 11<br>
+          ⏱ 17:30<br>
+        </div>
+
+        <div class="booking-item">
+          <strong>Silfra Snorkeling</strong><br>
+          📅 July 12<br>
+          ⏱ 10:00<br>
+        </div>
+
+        <div class="booking-item">
+          <strong>Whale Watching – Akureyri</strong><br>
+          📅 July 21<br>
+          ⏱ TBD
+        </div>
+
+        <div class="booking-item">
+          <strong>Sky Lagoon</strong><br>
+          📅 July 25<br>
+          ⏱ 19:00
+        </div>
+
+      </div>
+
+    </div>
+    <h2>Things Booked</h2>
+
+    <div class="booking">
+
+      <div class="booking-item">
+        <strong>✅ Amsterdam to Keflavík Flight</strong><br>
+        📅 July 10th<br>
+      </div>
+
+      <div class="booking-item">
+        <strong>✅ 2x Camper vans with insuarance</strong><br>
+        📅 July 12 - July 26th<br>
+      </div>
+
+      <div class="booking-item">
+        <strong>✅ Keflavík to Amsterdam Flight</strong><br>
+        📅 July 26th<br>
+      </div>
+
+    </div>
+
+  </div>
   </div>
 
   <footer>Campervan Journey</footer>
@@ -745,6 +869,23 @@
         ],
       },
     ];
+
+    document.querySelectorAll(".tab").forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        const tab = btn.dataset.tab;
+
+        document.getElementById(`tab-${tab}`).classList.add("active");
+
+      });
+
+    });
 
     /* TODAY PANEL */
 
