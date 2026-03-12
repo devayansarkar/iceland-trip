@@ -1,790 +1,873 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Iceland Expedition</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <title>Iceland Expedition</title>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
-    <style>
-      :root {
-        --bg: #05070c;
-        --card: #0f172a;
-        --accent: #38bdf8;
-        --text: #e5e7eb;
-        --muted: #9ca3af;
-        --border: #1f2937;
-      }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-      body {
-        margin: 0;
-        font-family: Inter;
-        background: var(--bg);
-        color: var(--text);
-      }
+  <style>
+    :root {
+      --bg: #05070c;
+      --card: #0f172a;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+    }
 
-      header {
-        padding: 60px;
-        text-align: center;
-        background: url("https://images.unsplash.com/photo-1491466424936-e304919aada7?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
-          center/cover;
-      }
+    body {
+      margin: 0;
+      font-family: Inter;
+      background: var(--bg);
+      color: var(--text);
+    }
 
-      header h1 {
-        margin: 0;
-        font-size: 38px;
-      }
+    header {
+      padding: 60px;
+      text-align: center;
+      background: url("https://images.unsplash.com/photo-1491466424936-e304919aada7?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D") center/cover;
+    }
 
-      .container {
-        max-width: 1000px;
-        margin: auto;
-        padding: 20px;
-      }
+    header h1 {
+      margin: 0;
+      font-size: 38px;
+    }
 
-      /* TODAY PANEL */
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
 
-      .today {
-        background: #020617;
-        border: 2px solid var(--accent);
-        padding: 20px;
-        border-radius: 12px;
-        margin-bottom: 30px;
-      }
+    /* TODAY PANEL */
 
-      .today h1 {
-        font-size: 56px;
-        margin: 10px 0;
-        color: #38bdf8;
-      }
+    .today {
+      background: #020617;
+      border: 2px solid var(--accent);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
 
-      .today h2 {
-        margin-top: 0;
-      }
+    .today h1 {
+      font-size: 56px;
+      margin: 10px 0;
+      color: #38bdf8;
+    }
 
-      /* DAY CARDS */
+    .today h2 {
+      margin-top: 0;
+    }
 
-      .day {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        margin-bottom: 16px;
-        overflow: hidden;
-        transition: 0.3s;
-      }
+    /* DAY CARDS */
 
-      .day.past {
-        opacity: 0.45;
-      }
+    .day {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
 
-      .day.today {
-        border: 2px solid var(--accent);
-      }
+    .day.past {
+      opacity: 0.45;
+    }
 
-      .day-header {
-        padding: 18px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-      }
+    .day.today {
+      border: 2px solid var(--accent);
+    }
 
-      .day-content {
-        display: none;
-        padding: 20px;
-      }
+    .day-header {
+      padding: 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
 
-      .image {
-        height: 160px;
-        background-size: cover;
-        border-radius: 8px;
-        margin-bottom: 14px;
-      }
+    .day-content {
+      display: none;
+      padding: 20px;
+    }
 
-      .day-map {
-        height: 240px;
-        border-radius: 8px;
-        margin-bottom: 18px;
-      }
+    .image {
+      height: 160px;
+      background-size: cover;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
 
-      /* TIMELINE */
+    .day-map {
+      height: 240px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
 
-      .stop {
-        display: grid;
-        grid-template-columns: 60px 1fr;
-        gap: 15px;
-        padding: 10px 0;
-        border-left: 2px solid var(--border);
-        margin-left: 10px;
-        position: relative;
-      }
+    /* TIMELINE */
 
-      .stop:before {
-        content: "";
-        width: 10px;
-        height: 10px;
-        background: var(--accent);
-        border-radius: 50%;
-        position: absolute;
-        left: -6px;
-        top: 16px;
-      }
+    .stop {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 15px;
+      padding: 10px 0;
+      border-left: 2px solid var(--border);
+      margin-left: 10px;
+      position: relative;
+    }
 
-      .time {
-        color: var(--accent);
-        font-size: 13px;
-        margin-left: 10px;
-        margin-top: 4px;
-      }
+    .stop:before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: absolute;
+      left: -6px;
+      top: 16px;
+    }
 
-      .notes {
-        color: var(--muted);
-        font-size: 14px;
-      }
+    .time {
+      color: var(--accent);
+      font-size: 13px;
+      margin-left: 10px;
+      margin-top: 4px;
+    }
 
-      .nav {
-        font-size: 13px;
-        margin-top: 4px;
-      }
+    .notes {
+      color: var(--muted);
+      font-size: 14px;
+    }
 
-      .nav a {
-        color: #22c55e;
-        text-decoration: none;
-      }
+    .nav {
+      font-size: 13px;
+      margin-top: 4px;
+    }
 
-      footer {
-        text-align: center;
-        padding: 40px;
-        color: var(--muted);
-      }
+    .nav a {
+      color: #22c55e;
+      text-decoration: none;
+    }
 
-      #search-container {
-        display: flex;
-        justify-content: center;
-        margin: 20px 0;
-      }
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
 
-      #search-input {
-        width: 300px;
-        padding: 8px 12px;
-        border-radius: 8px 0 0 8px;
-        border: 1px solid #555;
-        background-color: #222;
-        color: #eee;
-      }
+    #search-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
 
-      #search-btn {
-        padding: 8px 12px;
-        border-radius: 0 8px 8px 0;
-        border: 1px solid #555;
-        background-color: #38bdf8;
-        color: #111;
-        cursor: pointer;
-      }
-    </style>
-  </head>
+    #search-input {
+      width: 300px;
+      padding: 8px 12px;
+      border-radius: 8px 0 0 8px;
+      border: 1px solid #555;
+      background-color: #222;
+      color: #eee;
+    }
 
-  <body>
-    <header>
-      <h1>🇮🇸 Iceland Ring Road Expedition</h1>
-      <p>10 July – 26 July</p>
-    </header>
+    #search-btn {
+      padding: 8px 12px;
+      border-radius: 0 8px 8px 0;
+      border: 1px solid #555;
+      background-color: #38bdf8;
+      color: #111;
+      cursor: pointer;
+    }
 
-    <div class="container">
-      <div id="todayPanel" class="today"></div>
+    #fullTripMap {
+      height: 500px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
 
-      <div id="search"></d"></div>
-      <div id="trip"></d"></div>
+<body>
+  <header>
+    <h1>🇮🇸 Iceland Ring Road Expedition</h1>
+    <p>10 July – 26 July</p>
+  </header>
+
+  <div class="container">
+    <div id="todayPanel" class="today"></div>
+
+    <div id="fullTripMap"></div>
+    <div id="search">
+      </d">
     </div>
+    <div id="trip">
+      </d">
+    </div>
+  </div>
 
-    <footer>Campervan Journey</footer>
+  <footer>Campervan Journey</footer>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    <script>
-      /* TRIP DATES */
+  <script>
+    /* TRIP DATES */
 
-      const tripStart = new Date("2026-07-10");
-      const tripEnd = new Date("2026-07-26");
-      const today = new Date();
+    const tripStart = new Date("2026-07-10");
+    const tripEnd = new Date("2026-07-26");
+    const today = new Date();
 
-      /* FULL ITINERARY */
+    /* FULL ITINERARY */
 
-      const days = [
-        {
-          date: "2026-07-10",
-          title: "Arrival – Amsterdam → Reykjavik",
-          image:
-            "https://images.unsplash.com/photo-1606130503037-6a8ef67c9d2d?q=80&w=2525&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "16:20",
-              place: "Flight Amsterdam → Keflavík",
-              lat: 52.3105,
-              lon: 4.7683,
-              notes: "- Departure from Amsterdam Schiphol",
-            },
-            {
-              time: "18:00",
-              place: "Aurora Hotel at Keflavík International Airport",
-              lat: 63.9859,
-              lon: -22.6056,
-              notes: "- Check-in at hotel\n- Rest after flight",
-            },
-          ],
-        },
+    const days = [
+      {
+        date: "2026-07-10",
+        title: "Arrival – Amsterdam → Reykjavik",
+        image:
+          "https://images.unsplash.com/photo-1606130503037-6a8ef67c9d2d?q=80&w=2525&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "16:20",
+            place: "Flight Amsterdam → Keflavík",
+            lat: 52.3105,
+            lon: 4.7683,
+            notes: "- Departure from Amsterdam Schiphol",
+          },
+          {
+            time: "18:00",
+            place: "Aurora Hotel at Keflavík International Airport",
+            lat: 63.9859,
+            lon: -22.6056,
+            notes: "- Check-in at hotel\n- Rest after flight",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-11",
-          title: "Reykjanes Peninsula",
-          image:
-            "https://images.unsplash.com/photo-1594591032563-3a437642e990?q=80&w=2547&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "08:30",
-              place: "Selvik 5, Reykjanesbær",
-              lat: 63.995,
-              lon: -22.555,
-              notes:
-                "- Pick up car from Campeasy\n- Stop for Four Standing Stone\n- Grocery shopping at Bonus, Fitjar, 260 Njarðvík",
-            },
-            {
-              time: "12:30",
-              place: "Bonus",
-              lat: 63.9955,
-              lon: -22.554,
-              notes:
-                "- Drive via Bridge Between Continents, V89F+8QH, 233 Hafnir\n- Need to check about the Volcano Tour, takes around 3-4 hours",
-            },
-            {
-              time: "17:00",
-              place: "Fagradalsfjall Volcano",
-              lat: 63.892,
-              lon: -22.176,
-              notes: "- Drive via Bridge Between Continents",
-            },
-            {
-              time: "17:30",
-              place: "Blue Lagoon",
-              lat: 63.879,
-              lon: -22.449,
-              notes: "- Book for 2-3 hours (https://www.bluelagoon.com)",
-            },
-            {
-              time: "20:15",
-              place: "Grindavik Camping Site",
-              lat: 63.841,
-              lon: -22.438,
-              notes: "- Overnight camping",
-            },
-          ],
-        },
+      {
+        date: "2026-07-11",
+        title: "Reykjanes Peninsula",
+        image:
+          "https://images.unsplash.com/photo-1594591032563-3a437642e990?q=80&w=2547&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "08:30",
+            place: "Selvik 5, Reykjanesbær",
+            lat: 63.995,
+            lon: -22.555,
+            notes:
+              "- Pick up car from Campeasy\n- Stop for Four Standing Stone\n- Grocery shopping at Bonus, Fitjar, 260 Njarðvík",
+          },
+          {
+            time: "12:30",
+            place: "Bonus",
+            lat: 63.9955,
+            lon: -22.554,
+            notes:
+              "- Drive via Bridge Between Continents, V89F+8QH, 233 Hafnir\n- Need to check about the Volcano Tour, takes around 3-4 hours",
+          },
+          {
+            time: "17:00",
+            place: "Fagradalsfjall Volcano",
+            lat: 63.892,
+            lon: -22.176,
+            notes: "- Drive via Bridge Between Continents",
+          },
+          {
+            time: "17:30",
+            place: "Blue Lagoon",
+            lat: 63.879,
+            lon: -22.449,
+            notes: "- Book for 2-3 hours (https://www.bluelagoon.com)",
+          },
+          {
+            time: "20:15",
+            place: "Grindavik Camping Site",
+            lat: 63.841,
+            lon: -22.438,
+            notes: "- Overnight camping",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-12",
-          title: "Golden Circle",
-          image:
-            "https://images.unsplash.com/photo-1533491243587-20560e1d373d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "09:30",
-              place: "Thingvellir National Park",
-              lat: 64.255,
-              lon: -21.129,
-              notes:
-                "- Thingvellir National Park\n- Öxarárfoss (Öxarárfoss Parking P2)\n- 10 mins drive\n- Around 1 hour viewing time\n- Silfra snorkeling dive (https://www.dive.is/dive-sites/silfra) 3 hours total",
-            },
-            {
-              time: "15:30",
-              place: "Geysir",
-              lat: 64.3137,
-              lon: -20.3024,
-              notes: "- Eruption every 10 mins\n- Explore area around 1 hour",
-            },
-            {
-              time: "18:00",
-              place: "Gullfoss Waterfall",
-              lat: 64.327,
-              lon: -20.12,
-              notes:
-                "- Explore area around 1 hour\n- Drive back to Skjól Campsite (10 mins drive)",
-            },
-          ],
-        },
+      {
+        date: "2026-07-12",
+        title: "Golden Circle",
+        image:
+          "https://images.unsplash.com/photo-1533491243587-20560e1d373d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "09:30",
+            place: "Thingvellir National Park",
+            lat: 64.255,
+            lon: -21.129,
+            notes:
+              "- Thingvellir National Park\n- Öxarárfoss (Öxarárfoss Parking P2)\n- 10 mins drive\n- Around 1 hour viewing time\n- Silfra snorkeling dive (https://www.dive.is/dive-sites/silfra) 3 hours total",
+          },
+          {
+            time: "15:30",
+            place: "Geysir",
+            lat: 64.3137,
+            lon: -20.3024,
+            notes: "- Eruption every 10 mins\n- Explore area around 1 hour",
+          },
+          {
+            time: "18:00",
+            place: "Gullfoss Waterfall",
+            lat: 64.327,
+            lon: -20.12,
+            notes:
+              "- Explore area around 1 hour\n- Drive back to Skjól Campsite (10 mins drive)",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-13",
-          title: "Highlands – Landmannalaugar",
-          image:
-            "https://images.unsplash.com/photo-1547626740-02cb6aed9ef8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Skjól Campsite",
-              lat: 63.879,
-              lon: -19.06,
-              notes: "- Start scenic drive including F-road (F208)",
-            },
-            {
-              time: "12:00",
-              place: "Brúarhlöð",
-              lat: 64.104,
-              lon: -20.316,
-              notes: "- Stop and explore canyon",
-            },
-            {
-              time: "14:00",
-              place: "Hjálparfoss",
-              lat: 64.108,
-              lon: -19.716,
-              notes: "- Short waterfall hike",
-            },
-            {
-              time: "17:00",
-              place: "Landmannalaugar Camping",
-              lat: 63.99,
-              lon: -19.06,
-              notes:
-                "- Landmannalaugar camping\n- Explore areas like Gjáin, Hnausapollur, Landmannalaugar trails",
-            },
-          ],
-        },
+      {
+        date: "2026-07-13",
+        title: "Highlands – Landmannalaugar",
+        image:
+          "https://images.unsplash.com/photo-1547626740-02cb6aed9ef8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Skjól Campsite",
+            lat: 63.879,
+            lon: -19.06,
+            notes: "- Start scenic drive including F-road (F208)",
+          },
+          {
+            time: "12:00",
+            place: "Brúarhlöð",
+            lat: 64.104,
+            lon: -20.316,
+            notes: "- Stop and explore canyon",
+          },
+          {
+            time: "14:00",
+            place: "Hjálparfoss",
+            lat: 64.108,
+            lon: -19.716,
+            notes: "- Short waterfall hike",
+          },
+          {
+            time: "17:00",
+            place: "Landmannalaugar Camping",
+            lat: 63.99,
+            lon: -19.06,
+            notes:
+              "- Landmannalaugar camping\n- Explore areas like Gjáin, Hnausapollur, Landmannalaugar trails",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-14",
-          title: "South Coast Waterfalls",
-          image:
-            "https://images.unsplash.com/photo-1586794089057-35e7a1ee2008?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:30",
-              place: "Seljalandsfoss",
-              lat: 63.6156,
-              lon: -19.9886,
-              notes:
-                "- Walk behind the falls (~1.5 hrs)\n- Gljúfrabúi\n- Waterproof clothes recommended",
-            },
-            {
-              time: "14:30",
-              place: "Skógafoss",
-              lat: 63.5321,
-              lon: -19.511,
-              notes: "- Hike to top of the falls (~1.5 hrs)",
-            },
-            {
-              time: "17:00",
-              place: "Reynisfjara Beach",
-              lat: 63.404,
-              lon: -19.047,
-              notes: "- Hálsanefshellir Cave\n- Explore Black Sand Beach",
-            },
-            {
-              time: "19:15",
-              place: "Vík Camping",
-              lat: 63.4186,
-              lon: -19.006,
-              notes:
-                "- Plane Wreck hike (~60 mins each way)\n- Sunset beach visit",
-            },
-          ],
-        },
+      {
+        date: "2026-07-14",
+        title: "South Coast Waterfalls",
+        image:
+          "https://images.unsplash.com/photo-1586794089057-35e7a1ee2008?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:30",
+            place: "Seljalandsfoss",
+            lat: 63.6156,
+            lon: -19.9886,
+            notes:
+              "- Walk behind the falls (~1.5 hrs)\n- Gljúfrabúi\n- Waterproof clothes recommended",
+          },
+          {
+            time: "14:30",
+            place: "Skógafoss",
+            lat: 63.5321,
+            lon: -19.511,
+            notes: "- Hike to top of the falls (~1.5 hrs)",
+          },
+          {
+            time: "17:00",
+            place: "Reynisfjara Beach",
+            lat: 63.404,
+            lon: -19.047,
+            notes: "- Hálsanefshellir Cave\n- Explore Black Sand Beach",
+          },
+          {
+            time: "19:15",
+            place: "Vík Camping",
+            lat: 63.4186,
+            lon: -19.006,
+            notes:
+              "- Plane Wreck hike (~60 mins each way)\n- Sunset beach visit",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-15",
-          title: "Glaciers & Canyon",
-          image:
-            "https://images.unsplash.com/photo-1449528635524-39854b1fc119?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "11:00",
-              place: "Sólheimajökull viewpoint",
-              lat: 63.528,
-              lon: -19.376,
-              notes: "- Glacier walk (guided, check if solo possible)",
-            },
-            {
-              time: "12:30",
-              place: "Fjaðrárgljúfur Viewpoint",
-              lat: 63.771,
-              lon: -18.175,
-              notes: "- Canyon walk",
-            },
-            {
-              time: "14:00",
-              place: "Skaftafell Camping",
-              lat: 64.015,
-              lon: -16.966,
-              notes:
-                "- Explore Svínafellsjökull & Skaftafell Glaciers\n- Stjórnarfoss lunch stop",
-            },
-          ],
-        },
+      {
+        date: "2026-07-15",
+        title: "Glaciers & Canyon",
+        image:
+          "https://images.unsplash.com/photo-1449528635524-39854b1fc119?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "11:00",
+            place: "Sólheimajökull viewpoint",
+            lat: 63.528,
+            lon: -19.376,
+            notes: "- Glacier walk (guided, check if solo possible)",
+          },
+          {
+            time: "12:30",
+            place: "Fjaðrárgljúfur Viewpoint",
+            lat: 63.771,
+            lon: -18.175,
+            notes: "- Canyon walk",
+          },
+          {
+            time: "14:00",
+            place: "Skaftafell Camping",
+            lat: 64.015,
+            lon: -16.966,
+            notes:
+              "- Explore Svínafellsjökull & Skaftafell Glaciers\n- Stjórnarfoss lunch stop",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-16",
-          title: "Glacier Lagoons",
-          image:
-            "https://images.unsplash.com/photo-1734042090634-3b728c5fdc90?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Jökulsárlón Glacier Lagoon",
-              lat: 64.048,
-              lon: -16.18,
-              notes:
-                "- Fjallsárlón viewpoint & boat tour\n- Diamond Beach nearby",
-            },
-            {
-              time: "16:00",
-              place: "Camping Höfn",
-              lat: 64.253,
-              lon: -15.208,
-              notes: "- Dinner in town\n- Restock from Netto",
-            },
-          ],
-        },
+      {
+        date: "2026-07-16",
+        title: "Glacier Lagoons",
+        image:
+          "https://images.unsplash.com/photo-1734042090634-3b728c5fdc90?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Jökulsárlón Glacier Lagoon",
+            lat: 64.048,
+            lon: -16.18,
+            notes:
+              "- Fjallsárlón viewpoint & boat tour\n- Diamond Beach nearby",
+          },
+          {
+            time: "16:00",
+            place: "Camping Höfn",
+            lat: 64.253,
+            lon: -15.208,
+            notes: "- Dinner in town\n- Restock from Netto",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-17",
-          title: "Eastfjords",
-          image:
-            "https://images.unsplash.com/photo-1580217537073-6cd938f20ae8?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Djúpivogur",
-              lat: 64.657,
-              lon: -14.289,
-              notes:
-                "- Explore Almannaskarð, Skútafoss, Hvannagil, Eggin í Gleðivík",
-            },
-            {
-              time: "16:00",
-              place: "Egilsstaðir",
-              lat: 65.267,
-              lon: -14.394,
-              notes: "- Explore Green Rock, Breiðdalsvík, Fardagafoss",
-            },
-          ],
-        },
+      {
+        date: "2026-07-17",
+        title: "Eastfjords",
+        image:
+          "https://images.unsplash.com/photo-1580217537073-6cd938f20ae8?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Djúpivogur",
+            lat: 64.657,
+            lon: -14.289,
+            notes:
+              "- Explore Almannaskarð, Skútafoss, Hvannagil, Eggin í Gleðivík",
+          },
+          {
+            time: "16:00",
+            place: "Egilsstaðir",
+            lat: 65.267,
+            lon: -14.394,
+            notes: "- Explore Green Rock, Breiðdalsvík, Fardagafoss",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-18",
-          title: "Borgarfjörður Eystri",
-          image:
-            "https://images.unsplash.com/photo-1661086506597-73f39d2f9739?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "11:00",
-              place: "Sæluvogur",
-              lat: 65.513,
-              lon: -13.82,
-              notes: "- Stop by Njarðvíkurskriður\n- Puffin viewing spot",
-            },
-            {
-              time: "15:15",
-              place: "Borgarfjörður eystra Campground",
-              lat: 65.515,
-              lon: -13.824,
-              notes: "- Explore Denkmal Seemine area",
-            },
-          ],
-        },
+      {
+        date: "2026-07-18",
+        title: "Borgarfjörður Eystri",
+        image:
+          "https://images.unsplash.com/photo-1661086506597-73f39d2f9739?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "11:00",
+            place: "Sæluvogur",
+            lat: 65.513,
+            lon: -13.82,
+            notes: "- Stop by Njarðvíkurskriður\n- Puffin viewing spot",
+          },
+          {
+            time: "15:15",
+            place: "Borgarfjörður eystra Campground",
+            lat: 65.515,
+            lon: -13.824,
+            notes: "- Explore Denkmal Seemine area",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-19",
-          title: "Dettifoss & Myvatn",
-          image:
-            "https://images.unsplash.com/flagged/photo-1569254673946-fc73f377fce3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Dettifoss Parking (East)",
-              lat: 65.814,
-              lon: -16.384,
-              notes: "- Explore Hafragilsfoss nearby",
-            },
-            {
-              time: "16:00",
-              place: "Earth Lagoon Mývatn",
-              lat: 65.626,
-              lon: -16.847,
-              notes:
-                "- Drive via Grjótagjá\n- Book ticket (https://www.earthlagoon.is/book-ticket)",
-            },
-            {
-              time: "16:00",
-              place: "Camping Myvatn",
-              lat: 65.63,
-              lon: -16.92,
-              notes: "- Explore Stóragjá and surrounding area",
-            },
-          ],
-        },
+      {
+        date: "2026-07-19",
+        title: "Dettifoss & Myvatn",
+        image:
+          "https://images.unsplash.com/flagged/photo-1569254673946-fc73f377fce3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Dettifoss Parking (East)",
+            lat: 65.814,
+            lon: -16.384,
+            notes: "- Explore Hafragilsfoss nearby",
+          },
+          {
+            time: "16:00",
+            place: "Earth Lagoon Mývatn",
+            lat: 65.626,
+            lon: -16.847,
+            notes:
+              "- Drive via Grjótagjá\n- Book ticket (https://www.earthlagoon.is/book-ticket)",
+          },
+          {
+            time: "16:00",
+            place: "Camping Myvatn",
+            lat: 65.63,
+            lon: -16.92,
+            notes: "- Explore Stóragjá and surrounding area",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-20",
-          title: "Volcanic Myvatn",
-          image:
-            "https://images.unsplash.com/photo-1563873003399-d410dfd2cd1e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Hverir",
-              lat: 65.64,
-              lon: -16.813,
-              notes:
-                "- Explore area\n- Fly Lands\n- Námafjall Hverir Viewpoint\n- Old Icelandic Thermal Pool",
-            },
-            {
-              time: "12:15",
-              place: "Krafla",
-              lat: 65.715,
-              lon: -16.728,
-              notes:
-                "- Víti crater\n- Krafla Landsvirkjun panoramic view\n- Leirhnjukur",
-            },
-            {
-              time: "14:00",
-              place: "Lava field Dimmuborgir",
-              lat: 65.589,
-              lon: -16.911,
-              notes: "- Explore lava formations",
-            },
-            {
-              time: "19:30",
-              place: "Camping Myvatn",
-              lat: 65.63,
-              lon: -16.92,
-              notes: "- Overnight stay",
-            },
-          ],
-        },
+      {
+        date: "2026-07-20",
+        title: "Volcanic Myvatn",
+        image:
+          "https://images.unsplash.com/photo-1563873003399-d410dfd2cd1e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Hverir",
+            lat: 65.64,
+            lon: -16.813,
+            notes:
+              "- Explore area\n- Fly Lands\n- Námafjall Hverir Viewpoint\n- Old Icelandic Thermal Pool",
+          },
+          {
+            time: "12:15",
+            place: "Krafla",
+            lat: 65.715,
+            lon: -16.728,
+            notes:
+              "- Víti crater\n- Krafla Landsvirkjun panoramic view\n- Leirhnjukur",
+          },
+          {
+            time: "14:00",
+            place: "Lava field Dimmuborgir",
+            lat: 65.589,
+            lon: -16.911,
+            notes: "- Explore lava formations",
+          },
+          {
+            time: "19:30",
+            place: "Camping Myvatn",
+            lat: 65.63,
+            lon: -16.92,
+            notes: "- Overnight stay",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-21",
-          title: "Godafoss & Akureyri",
-          image:
-            "https://images.unsplash.com/photo-1558801875-1dff4fe605d8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Goðafoss East Bank Parking",
-              lat: 65.683,
-              lon: -17.55,
-              notes:
-                "- Explore Goðafoss, Lítillfoss, Geitafoss\n- Godafoss pedestrian bridge",
-            },
-            {
-              time: "12:30",
-              place: "Akureyri",
-              lat: 65.683,
-              lon: -18.087,
-              notes:
-                "- Explore city, Hof Cultural & Conference Centre, Samkomubrú, Akureyri Botanical Garden\n- Check Keli Sea Tours Whale Watching (3 hrs)\n- Restock supermarket",
-            },
-            {
-              time: "20:00",
-              place: "Hvítserkur viewpoint",
-              lat: 65.608,
-              lon: -20.636,
-              notes: "- Optional visit depending on time / sea tour",
-            },
-            {
-              time: "22:00",
-              place: "Hvammstangi Campground",
-              lat: 65.694,
-              lon: -20.939,
-              notes: "- Overnight stay",
-            },
-          ],
-        },
+      {
+        date: "2026-07-21",
+        title: "Godafoss & Akureyri",
+        image:
+          "https://images.unsplash.com/photo-1558801875-1dff4fe605d8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Goðafoss East Bank Parking",
+            lat: 65.683,
+            lon: -17.55,
+            notes:
+              "- Explore Goðafoss, Lítillfoss, Geitafoss\n- Godafoss pedestrian bridge",
+          },
+          {
+            time: "12:30",
+            place: "Akureyri",
+            lat: 65.683,
+            lon: -18.087,
+            notes:
+              "- Explore city, Hof Cultural & Conference Centre, Samkomubrú, Akureyri Botanical Garden\n- Check Keli Sea Tours Whale Watching (3 hrs)\n- Restock supermarket",
+          },
+          {
+            time: "20:00",
+            place: "Hvítserkur viewpoint",
+            lat: 65.608,
+            lon: -20.636,
+            notes: "- Optional visit depending on time / sea tour",
+          },
+          {
+            time: "22:00",
+            place: "Hvammstangi Campground",
+            lat: 65.694,
+            lon: -20.939,
+            notes: "- Overnight stay",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-22",
-          title: "Snæfellsnes Peninsula",
-          image:
-            "https://images.unsplash.com/photo-1595742744735-415fc20ef88f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Kirkjufellsfoss Parking Lot",
-              lat: 64.927,
-              lon: -23.308,
-              notes: "- Stop at Grundarfjörður for Kirkjufell Viewpoint",
-            },
-            {
-              time: "15:00",
-              place: "Arnarstapi Camping",
-              lat: 64.765,
-              lon: -23.617,
-              notes:
-                "- Drive via Lóndrangar & Hellnar\n- Explore Gatklettur, Músagjá, Arnarstapi Lighthouse",
-            },
-          ],
-        },
+      {
+        date: "2026-07-22",
+        title: "Snæfellsnes Peninsula",
+        image:
+          "https://images.unsplash.com/photo-1595742744735-415fc20ef88f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Kirkjufellsfoss Parking Lot",
+            lat: 64.927,
+            lon: -23.308,
+            notes: "- Stop at Grundarfjörður for Kirkjufell Viewpoint",
+          },
+          {
+            time: "15:00",
+            place: "Arnarstapi Camping",
+            lat: 64.765,
+            lon: -23.617,
+            notes:
+              "- Drive via Lóndrangar & Hellnar\n- Explore Gatklettur, Músagjá, Arnarstapi Lighthouse",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-23",
-          title: "Snæfellsnes Coast",
-          image:
-            "https://images.unsplash.com/photo-1531925732933-b8343286bfbc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:15",
-              place: "Snæfellsjökull View Point",
-              lat: 64.807,
-              lon: -23.773,
-              notes: "- Walk to Búðaklettur",
-            },
-            {
-              time: "12:00",
-              place: "Gerðuberg Cliffs",
-              lat: 64.731,
-              lon: -22.789,
-              notes:
-                "- Stop by Ytri Tunga for Sea Lions\n- Explore cliffs, optional extension to Ytri-Rauðarmelskúla",
-            },
-            {
-              time: "15:00",
-              place: "Borgarnes Camping",
-              lat: 64.538,
-              lon: -21.92,
-              notes: "- Explore Borgarnes city and sea side",
-            },
-          ],
-        },
+      {
+        date: "2026-07-23",
+        title: "Snæfellsnes Coast",
+        image:
+          "https://images.unsplash.com/photo-1531925732933-b8343286bfbc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:15",
+            place: "Snæfellsjökull View Point",
+            lat: 64.807,
+            lon: -23.773,
+            notes: "- Walk to Búðaklettur",
+          },
+          {
+            time: "12:00",
+            place: "Gerðuberg Cliffs",
+            lat: 64.731,
+            lon: -22.789,
+            notes:
+              "- Stop by Ytri Tunga for Sea Lions\n- Explore cliffs, optional extension to Ytri-Rauðarmelskúla",
+          },
+          {
+            time: "15:00",
+            place: "Borgarnes Camping",
+            lat: 64.538,
+            lon: -21.92,
+            notes: "- Explore Borgarnes city and sea side",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-24",
-          title: "Westman Islands",
-          image:
-            "https://images.unsplash.com/photo-1668996301291-ad34042f54e3?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "09:30",
-              place: "Landeyjahöfn",
-              lat: 63.5,
-              lon: -20.2,
-              notes:
-                "- Park and visit Shipwreck\n- Ferry to Heimaey (pre-booking recommended)",
-            },
-            {
-              time: "19:30",
-              place: "Hvolsvöllur Camp Site",
-              lat: 63.417,
-              lon: -19.35,
-              notes: "- Overnight stay",
-            },
-          ],
-        },
+      {
+        date: "2026-07-24",
+        title: "Westman Islands",
+        image:
+          "https://images.unsplash.com/photo-1668996301291-ad34042f54e3?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "09:30",
+            place: "Landeyjahöfn",
+            lat: 63.5,
+            lon: -20.2,
+            notes:
+              "- Park and visit Shipwreck\n- Ferry to Heimaey (pre-booking recommended)",
+          },
+          {
+            time: "19:30",
+            place: "Hvolsvöllur Camp Site",
+            lat: 63.417,
+            lon: -19.35,
+            notes: "- Overnight stay",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-25",
-          title: "Reykjavik",
-          image:
-            "https://images.unsplash.com/photo-1474690870753-1b92efa1f2d8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:00",
-              place: "Viðey Ferry Terminal",
-              lat: 64.153,
-              lon: -21.904,
-              notes: "- Explore shore area and island",
-            },
-            {
-              time: "14:30",
-              place: "Reykjavík Hotel",
-              lat: 64.135,
-              lon: -21.895,
-              notes: "- Hotel check-in\n- Drop car\n- Book bus if needed",
-            },
-            {
-              time: "19:00",
-              place: "Sky Lagoon",
-              lat: 64.122,
-              lon: -21.912,
-              notes: "- Book ticket (https://www.skylagoon.com)",
-            },
-          ],
-        },
+      {
+        date: "2026-07-25",
+        title: "Reykjavik",
+        image:
+          "https://images.unsplash.com/photo-1474690870753-1b92efa1f2d8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:00",
+            place: "Viðey Ferry Terminal",
+            lat: 64.153,
+            lon: -21.904,
+            notes: "- Explore shore area and island",
+          },
+          {
+            time: "14:30",
+            place: "Reykjavík Hotel",
+            lat: 64.135,
+            lon: -21.895,
+            notes: "- Hotel check-in\n- Drop car\n- Book bus if needed",
+          },
+          {
+            time: "19:00",
+            place: "Sky Lagoon",
+            lat: 64.122,
+            lon: -21.912,
+            notes: "- Book ticket (https://www.skylagoon.com)",
+          },
+        ],
+      },
 
-        {
-          date: "2026-07-26",
-          title: "Departure",
-          image:
-            "https://images.unsplash.com/photo-1601650904409-0ba17f32926a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-          stops: [
-            {
-              time: "10:30",
-              place: "Explore Reykjavík city centre",
-              lat: 64.1466,
-              lon: -21.9426,
-              notes: "- Hallgrimskirkja, Skólavörðustígur Rainbow Street, etc.",
-            },
-            {
-              time: "14:30",
-              place: "KEF Airport",
-              lat: 63.985,
-              lon: -22.605,
-              notes: "- Fly back at 18:35\n- Book airport drop",
-            },
-          ],
-        },
-      ];
+      {
+        date: "2026-07-26",
+        title: "Departure",
+        image:
+          "https://images.unsplash.com/photo-1601650904409-0ba17f32926a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        stops: [
+          {
+            time: "10:30",
+            place: "Explore Reykjavík city centre",
+            lat: 64.1466,
+            lon: -21.9426,
+            notes: "- Hallgrimskirkja, Skólavörðustígur Rainbow Street, etc.",
+          },
+          {
+            time: "14:30",
+            place: "KEF Airport",
+            lat: 63.985,
+            lon: -22.605,
+            notes: "- Fly back at 18:35\n- Book airport drop",
+          },
+        ],
+      },
+    ];
 
-      /* TODAY PANEL */
+    /* TODAY PANEL */
 
-      const todayPanel = document.getElementById("todayPanel");
+    const todayPanel = document.getElementById("todayPanel");
 
-      const todayStr = today.toISOString().slice(0, 10);
+    const todayStr = today.toISOString().slice(0, 10);
 
-      const todayDay = days.find((d) => d.date === todayStr);
+    const todayDay = days.find((d) => d.date === todayStr);
 
-      const diffTime = tripStart - today;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffTime = tripStart - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      if (today < tripStart) {
-        todayPanel.innerHTML = `
-<h2>🇮🇸 Trip Countdown</h2>
-<h1>${diffDays} days</h1>
-<p>until departure to Iceland</p>
-`;
-      } else if (todayDay) {
-        todayPanel.innerHTML = `
-<h2>📍 Today's Plan</h2>
-<strong>${todayDay.title}</strong>
-<ul>
-${todayDay.stops.map((s) => `<li>${s.time} — ${s.place}</li>`).join("")}
-</ul>
-`;
-      } else if (today > tripEnd) {
-        todayPanel.innerHTML = `
-<h2>Trip Completed</h2>
-<p>Your Iceland adventure finished on July 26</p>
-`;
+    if (today < tripStart) {
+      todayPanel.innerHTML = `
+          <h2>🇮🇸 Trip Countdown</h2>
+          <h1>${diffDays} days</h1>
+          <p>until departure to Iceland</p>
+          `;
+    } else if (todayDay) {
+      todayPanel.innerHTML = `
+          <h2>📍 Today's Plan</h2>
+          <strong>${todayDay.title}</strong>
+          <ul>
+          ${todayDay.stops.map((s) => `<li>${s.time} — ${s.place}</li>`).join("")}
+          </ul>
+          `;
+    } else if (today > tripEnd) {
+      todayPanel.innerHTML = `
+          <h2>Trip Completed</h2>
+          <p>Your Iceland adventure finished on July 26</p>
+          `;
+    }
+
+    /* RENDER DAYS */
+
+    async function loadDayMap(dayIndex) {
+
+      const day = days[dayIndex];
+
+      const content = document
+        .getElementById(`day-${dayIndex}`)
+        .querySelector(".day-content");
+
+      if (content.dataset.loaded) return;
+
+      const map = L.map(`map${dayIndex}`).setView(
+        [day.stops[0].lat, day.stops[0].lon],
+        8
+      );
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        { attribution: "© OpenStreetMap" }
+      ).addTo(map);
+
+      const coords = day.stops.map((s) => [s.lat, s.lon]);
+
+      /* ADD MARKERS */
+
+      day.stops.forEach((stop) => {
+
+        L.marker(
+          [stop.lat, stop.lon],
+          { icon: getIcon(stop.place) }
+        )
+          .addTo(map)
+          .bindPopup(`
+        <strong>${day.title}</strong><br>
+        ${stop.time} — ${stop.place}
+      `);
+
+      });
+
+      /* BUILD ROUTE REQUEST */
+
+      const coordString = day.stops
+        .map((s) => `${s.lon},${s.lat}`)
+        .join(";");
+
+      const url =
+        `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson`;
+
+      try {
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const route = data.routes[0].geometry;
+
+        const routeLayer = L.geoJSON(route, {
+          style: {
+            color: "#38bdf8",
+            weight: 4
+          }
+        }).addTo(map);
+
+        map.fitBounds(routeLayer.getBounds());
+
+      } catch (e) {
+
+        console.error("Route error", e);
+
+        map.fitBounds(coords);
+
       }
 
-      /* RENDER DAYS */
+      content.dataset.loaded = true;
 
-      const container = document.getElementById("trip");
+    }
 
-      days.forEach((d, i) => {
-        const date = new Date(d.date);
+    const container = document.getElementById("trip");
 
-        const div = document.createElement("div");
-        div.className = "day";
-        div.id = `day-${i}`
+    days.forEach((d, i) => {
+      const date = new Date(d.date);
 
-        if (date < today) div.classList.add("past");
-        if (d.date === todayStr) div.classList.add("today");
+      const div = document.createElement("div");
+      div.className = "day";
+      div.id = `day-${i}`
 
-        div.innerHTML = `
+      if (date < today) div.classList.add("past");
+      if (d.date === todayStr) div.classList.add("today");
+
+      div.innerHTML = `
 
                 <div class="day-header">
 
@@ -804,8 +887,8 @@ ${todayDay.stops.map((s) => `<li>${s.time} — ${s.place}</li>`).join("")}
                 <div id="map${i}" class="day-map"></div>
 
                 ${d.stops
-                  .map(
-                    (s) => `
+          .map(
+            (s) => `
 
                 <div class="stop">
 
@@ -827,98 +910,245 @@ ${todayDay.stops.map((s) => `<li>${s.time} — ${s.place}</li>`).join("")}
                 </div>
 
                 `,
-                  )
-                  .join("")}
+          )
+          .join("")}
 
                 </div>
 
           `;
 
-        const search = document.getElementById("search");
-        const searchBox = `
+      const search = document.getElementById("search");
+      const searchBox = `
         <div id="search-container">
           <input type="text" id="search-input" placeholder="Search itinerary..." />
           <button id="search-btn">🔍</button>
         </div>
         `
 
-        search.innerHTML = searchBox;
+      search.innerHTML = searchBox;
 
-        container.appendChild(div);
+      container.appendChild(div);
 
-        const header = div.querySelector(".day-header");
-        const content = div.querySelector(".day-content");
+      const header = div.querySelector(".day-header");
+      const content = div.querySelector(".day-content");
 
-        header.onclick = () => {
-          content.style.display =
-            content.style.display === "block" ? "none" : "block";
+      header.onclick = () => {
+        content.style.display =
+          content.style.display === "block" ? "none" : "block";
 
-          if (!content.dataset.loaded) {
-            const map = L.map(`map${i}`).setView(
-              [d.stops[0].lat, d.stops[0].lon],
-              8,
-            );
+        loadDayMap(i);
+      };
+    });
 
-            L.tileLayer(
-              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            ).addTo(map);
+    const searchInput = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
 
-            const coords = d.stops.map((s) => [s.lat, s.lon]);
+    searchBtn.addEventListener("click", () => {
+      const query = searchInput.value.toLowerCase();
+      if (!query) return;
 
-            const route = L.polyline(coords, { color: "#38bdf8" }).addTo(map);
+      // Find the first matching day/stop
+      for (let i = 0; i < days.length; i++) {
+        const day = days[i];
+        const dayText = day.title.toLowerCase();
+        if (dayText.includes(query)) {
+          document
+            .getElementById(`day-${i}`)
+            .scrollIntoView({ behavior: "smooth" });
+          highlightDay(i);
+          return;
+        }
 
-            coords.forEach((c) => L.marker(c).addTo(map));
-
-            map.fitBounds(route.getBounds());
-
-            content.dataset.loaded = true;
-          }
-        };
-      });
-
-      const searchInput = document.getElementById("search-input");
-      const searchBtn = document.getElementById("search-btn");
-
-      searchBtn.addEventListener("click", () => {
-        const query = searchInput.value.toLowerCase();
-        if (!query) return;
-
-        // Find the first matching day/stop
-        for (let i = 0; i < days.length; i++) {
-          const day = days[i];
-          const dayText = day.title.toLowerCase();
-          if (dayText.includes(query)) {
+        for (let j = 0; j < day.stops.length; j++) {
+          const stop = day.stops[j];
+          const stopText = (stop.place + " " + stop.notes).toLowerCase();
+          if (stopText.includes(query)) {
             document
               .getElementById(`day-${i}`)
               .scrollIntoView({ behavior: "smooth" });
             highlightDay(i);
             return;
           }
-
-          for (let j = 0; j < day.stops.length; j++) {
-            const stop = day.stops[j];
-            const stopText = (stop.place + " " + stop.notes).toLowerCase();
-            if (stopText.includes(query)) {
-              document
-                .getElementById(`day-${i}`)
-                .scrollIntoView({ behavior: "smooth" });
-              highlightDay(i);
-              return;
-            }
-          }
         }
+      }
 
-        alert("No matches found!");
+      alert("No matches found!");
+    });
+
+    // Optional: Highlight the day when search hits
+    function highlightDay(dayIndex) {
+      const dayDiv = document.getElementById(`day-${dayIndex}`);
+      dayDiv.style.border = "2px solid #38bdf8";
+      setTimeout(() => {
+        dayDiv.style.border = "none";
+      }, 2000);
+    }
+    const dayColors = [
+      "#38bdf8",
+      "#22c55e",
+      "#f59e0b",
+      "#ef4444",
+      "#8b5cf6",
+      "#14b8a6",
+      "#f97316",
+      "#eab308"
+    ];
+    const icons = {
+
+      volcano: L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/128/6678/6678484.png",
+        iconSize: [28, 28]
+      }),
+
+      waterfall: L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/128/9788/9788627.png",
+        iconSize: [28, 28]
+      }),
+
+      city: L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/128/2451/2451728.png",
+        iconSize: [28, 28]
+      }),
+
+      camping: L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/128/1020/1020535.png",
+        iconSize: [28, 28]
+      }),
+
+      default: L.icon({
+        iconUrl: "https://cdn-icons-png.flaticon.com/128/9683/9683128.png",
+        iconSize: [26, 26]
+      })
+
+    };
+    function getIcon(stopName) {
+
+      const name = stopName.toLowerCase();
+
+      if (name.includes("volcano")) return icons.volcano;
+
+      if (name.includes("foss")) return icons.waterfall;
+
+      if (name.includes("camp")) return icons.camping;
+
+      if (name.includes("reykjav") || name.includes("akureyri"))
+        return icons.city;
+
+      return icons.default;
+
+    }
+
+    function goToDay(dayIndex) {
+
+      const dayElement = document.getElementById(`day-${dayIndex}`);
+
+      if (!dayElement) return;
+
+      dayElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
       });
 
-      // Optional: Highlight the day when search hits
-      function highlightDay(dayIndex) {
-        const dayDiv = document.getElementById(`day-${dayIndex}`);
-        dayDiv.style.border = "2px solid #38bdf8";
-        setTimeout(() => {
-          dayDiv.style.border = "none";
-        }, 2000);
+      dayElement.style.border = "2px solid #38bdf8";
+
+      setTimeout(() => {
+        dayElement.style.border = "";
+      }, 2000);
+
+      /* open the day automatically */
+
+      const content = dayElement.querySelector(".day-content");
+
+      if (content && content.style.display !== "block") {
+        content.style.display = "block";
       }
-    </script>
-  </body>
+
+      loadDayMap(dayIndex);
+
+    }
+    async function renderFullTripRoute() {
+
+      const map = L.map("fullTripMap").setView([64.9, -18.6], 6);
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        { attribution: "© OpenStreetMap" }
+      ).addTo(map);
+
+      let bounds = [];
+
+      /* LOOP DAYS */
+
+      for (let i = 1; i < days.length; i++) {
+
+        const day = days[i];
+        const coords = day.stops.map(s => [s.lat, s.lon]);
+
+        /* MARKERS */
+
+        day.stops.forEach((stop, index) => {
+
+          const marker = L.marker(
+            [stop.lat, stop.lon],
+            { icon: getIcon(stop.place) }
+          ).addTo(map);
+
+          marker.bindPopup(`
+            <strong>Day ${i + 1}</strong><br>
+            ${day.title}<br><br>
+
+            ${stop.time} — ${stop.place}
+
+            <br><br>
+
+            <button onclick="goToDay(${i})"
+            style="
+            padding:6px 10px;
+            border-radius:6px;
+            border:none;
+            background:#38bdf8;
+            cursor:pointer;
+            font-size:12px;
+            ">
+            Open Day Plan
+            </button>
+            `);
+
+          bounds.push([stop.lat, stop.lon]);
+
+        });
+
+        /* OSRM ROUTE */
+
+        const coordString = coords
+          .map(c => `${c[1]},${c[0]}`)
+          .join(";");
+
+        const url =
+          `https://router.project-osrm.org/route/v1/driving/${coordString}?overview=full&geometries=geojson`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const route = data.routes[0].geometry;
+
+        L.geoJSON(route, {
+          style: {
+            color: dayColors[i % dayColors.length],
+            weight: 5
+          }
+        }).addTo(map);
+
+      }
+
+      /* ZOOM */
+
+      map.fitBounds(bounds);
+
+    }
+
+    renderFullTripRoute();
+  </script>
+</body>
+
 </html>
