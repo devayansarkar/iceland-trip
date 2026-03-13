@@ -144,6 +144,11 @@
       font-size: 14px;
     }
 
+    .duration {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     .nav {
       font-size: 13px;
       margin-top: 4px;
@@ -434,8 +439,8 @@
               "- Pick up car from Campeasy",
           },
           {
-            time: "10:30",
-            duration: "1 hr",
+            time: "10:00",
+            duration: "45 mins",
             place: "Grocery shopping at Bonus",
             lat: 63.9297944,
             lon: -22.445296,
@@ -443,7 +448,7 @@
               "- Bonus, Fitjar, 260 Njarðvík",
           },
           {
-            time: "11:30",
+            time: "11:00",
             place: "Visit Sagnatröllin",
             duration: "30 mins",
             lat: 63.5834,
@@ -452,7 +457,7 @@
               "- Visit troll statues / Four standing stones",
           },
           {
-            time: "12:45",
+            time: "12:30",
             place: "Bridge between continents",
             duration: "45 mins",
             lat: 63.8683,
@@ -461,20 +466,28 @@
               "- Bridge Between Continents",
           },
           {
-            time: "14:00",
+            time: "13:30",
             duration: "5 hrs",
             place: "Fagradalsfjall Volcano",
-             lat: 63.865000,
+            lat: 63.865000,
             lon: -22.315056,
             notes:
               "- Self volcano tour\n - https://charlieswanderings.com/adventure_travel/fagradalsfjall-hiking-trail/",
           },
+           {
+            time: "19:30",
+            place: "Blue Lagoon",
+            duration: "4 hrs",
+            lat: 63.879,
+            lon: -22.449,
+            notes: "- https://www.bluelagoon.com",
+          },
           {
-            time: "20:15",
+            time: "23:30",
             place: "Grindavik Camping Site",
             lat: 63.841,
             lon: -22.438,
-            notes: "- Overnight camping\n - Explore food and sleeping arrangements",
+            notes: "- Overnight camping\n - Explore food and sleeping arrangements\n - https://grindavikcampsite.com/",
           }
         ],
       },
@@ -1172,11 +1185,12 @@
 
                 <div class="stop">
 
-                <div class="time">${s.time}</div>
+                   <div class="time">${s.time}</div>
 
                 <div>
 
                 <div>${s.place}</div>
+                <div class="duration">${s.duration ?? ''}</div>
                 <div class="notes">${s.notes.replace(/\n/g, "<br>")}</div>
 
                 <div class="nav">
