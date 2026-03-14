@@ -243,6 +243,86 @@
     a {
       color: white;
     }
+
+    /* color variations */
+    .tag-blue {
+      background: #38bdf8;
+    }
+
+    .tag-green {
+      background: #22c55e;
+    }
+
+    .tag-orange {
+      background: #f59e0b;
+    }
+
+    .tag-purple {
+      background: #8b5cf6;
+    }
+
+    .tag-red {
+      background: #ef4444;
+    }
+
+    .tag-cyan {
+      background: #06b6d4;
+    }
+
+    .tags {
+      margin-top: 6px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-weight: 500;
+      color: white;
+    }
+
+    .tag-volcano {
+      background: #ef4444;
+    }
+
+    .tag-waterfall {
+      background: #38bdf8;
+    }
+
+    .tag-camping {
+      background: #22c55e;
+    }
+
+    .tag-glacier {
+      background: #06b6d4;
+    }
+
+    .tag-wildlife {
+      background: #f59e0b;
+    }
+
+    .tag-hiking {
+      background: #186810;
+    }
+
+    .tag-sunrise {
+      background: #fffb21;
+    }
+
+    .tag-sunset {
+      background: #fece3d;
+    }
+
+    .tag-long-day {
+      background: #4961e6;
+    }
+
+    .tag-hotspring {
+      background: #8b5cf6;
+    }
   </style>
 </head>
 
@@ -393,6 +473,51 @@
     const tripStart = new Date("2026-07-10");
     const tripEnd = new Date("2026-07-26");
     const today = new Date();
+
+    function detectTags(day) {
+
+      const text = day.stops
+        .map(s => (s.place + " " + (s.notes || "")).toLowerCase())
+        .join(" ");
+
+      const addedTags = day.tags ?? []
+
+      const tags = [...addedTags];
+
+      if (text.includes("volcano") || text.includes("fagradalsfjall"))
+        tags.push({ name: "🌋 Volcano", class: "tag-volcano" });
+
+      if (text.includes("foss") || text.includes("waterfall"))
+        tags.push({ name: "💧 Waterfall", class: "tag-waterfall" });
+
+      if (text.includes("camp"))
+        tags.push({ name: "🏕 Camping", class: "tag-camping" });
+
+      if (text.includes("hike"))
+        tags.push({ name: "🥾 Hiking", class: "tag-hiking" });
+
+      if (text.includes("jökull") || text.includes("glacier"))
+        tags.push({ name: "🧊 Glacier", class: "tag-glacier" });
+
+      if (text.includes("sunrise") || text.includes("sunrise"))
+        tags.push({ name: "🌅 Sunrise", class: "tag-sunrise" });
+
+      if (text.includes("sunset") || text.includes("sunset"))
+        tags.push({ name: "🌇 Sunet", class: "tag-sunset" });
+
+      if (text.includes("puffin") || text.includes("whale") || text.includes("seal"))
+        tags.push({ name: "🐧 Wildlife", class: "tag-wildlife" });
+
+      if (
+        text.includes("lagoon") ||
+        text.includes("hot spring") ||
+        text.includes("thermal") ||
+        text.includes("geo")
+      )
+        tags.push({ name: "🧖 Hot Spring", class: "tag-hotspring" });
+
+      return tags;
+    }
 
     /* FULL ITINERARY */
 
@@ -1366,14 +1491,18 @@
 
       if (date < today) div.classList.add("past");
       if (d.date === todayStr) div.classList.add("today");
-
+      const tags = detectTags(d);
       div.innerHTML = `
 
                 <div class="day-header">
 
                 <div>
-                <strong>${date.toDateString()}</strong><br>
-                ${d.title}
+                  <strong>Day ${i + 1}</strong><br>
+                  <strong>${date.toDateString()}</strong><br>
+                  ${d.title}
+                  <div class="tags">
+                    ${tags.map(t => `<span class="tag ${t.class}">${t.name}</span>`).join("")}
+                  </div>
                 </div>
 
                 <div>▼</div>
