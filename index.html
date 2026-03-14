@@ -284,6 +284,10 @@
       color: white;
     }
 
+    .tag-generic {
+      background: #8eddff;
+    }
+
     .tag-volcano {
       background: #ef4444;
     }
@@ -293,7 +297,7 @@
     }
 
     .tag-camping {
-      background: #22c55e;
+      background: #169b47;
     }
 
     .tag-glacier {
@@ -317,7 +321,7 @@
     }
 
     .tag-long-day {
-      background: #4961e6;
+      background: #c8cce2;
     }
 
     .tag-hotspring {
@@ -482,7 +486,7 @@
 
       const addedTags = day.tags ?? []
 
-      const tags = [...addedTags];
+      const tags = addedTags.map((t) => ({ name: t, class: "tag-generic" }));
 
       if (text.includes("volcano") || text.includes("fagradalsfjall"))
         tags.push({ name: "🌋 Volcano", class: "tag-volcano" });
@@ -525,6 +529,7 @@
       {
         date: "2026-07-10",
         title: "Arrival – Amsterdam → Reykjavik",
+        tags: ["✈️ Flight"],
         image:
           "https://images.unsplash.com/photo-1606130503037-6a8ef67c9d2d?q=80&w=2525&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -548,6 +553,7 @@
       {
         date: "2026-07-11",
         title: "Reykjanes Peninsula",
+        tags: ["🩱 Blue Lagoon", "⏰ Long day"],
         image:
           "https://images.unsplash.com/photo-1594591032563-3a437642e990?q=80&w=2547&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -594,7 +600,7 @@
             lat: 63.865000,
             lon: -22.315056,
             notes:
-              "- Self volcano tour\n- https://charlieswanderings.com/adventure_travel/fagradalsfjall-hiking-trail/",
+              "- Self volcano hike\n- https://charlieswanderings.com/adventure_travel/fagradalsfjall-hiking-trail/",
           },
           {
             time: "19:30",
@@ -617,6 +623,7 @@
       {
         date: "2026-07-12",
         title: "Golden Circle",
+        tags: ["🤿 Snorkelling"],
         image:
           "https://images.unsplash.com/photo-1533491243587-20560e1d373d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -677,6 +684,7 @@
       {
         date: "2026-07-13",
         title: "Highlands – Landmannalaugar",
+        tags: ["⏰ Long day"],
         image:
           "https://images.unsplash.com/photo-1547626740-02cb6aed9ef8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -758,6 +766,7 @@
       {
         date: "2026-07-14",
         title: "Westman Islands",
+        tags: ["⛴️ Ferry"],
         image:
           "https://images.unsplash.com/photo-1668996301291-ad34042f54e3?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -783,6 +792,7 @@
       {
         date: "2026-07-15",
         title: "South Coast Waterfalls",
+        tags: ["⏰ Long day", "🏖️ Black sand beach"],
         image:
           "https://images.unsplash.com/photo-1586794089057-35e7a1ee2008?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -900,6 +910,7 @@
       {
         date: "2026-07-17",
         title: "Glacier Lagoons",
+        tags: ["💎 Diamon beach"],
         image:
           "https://images.unsplash.com/photo-1734042090634-3b728c5fdc90?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -988,6 +999,7 @@
       {
         date: "2026-07-19",
         title: "Borgarfjörður Eystri",
+        tags: ["🐦 Puffins"],
         image:
           "https://images.unsplash.com/photo-1661086506597-73f39d2f9739?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -1041,6 +1053,7 @@
       {
         date: "2026-07-20",
         title: "Dettifoss canyon & Myvatn",
+        tags: ["⏰ Long day"],
         image:
           "https://images.unsplash.com/flagged/photo-1569254673946-fc73f377fce3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -1119,6 +1132,7 @@
       {
         date: "2026-07-22",
         title: "Godafoss & Akureyri",
+        tags: ["🐋 Whale", "⏰ Long day"],
         image:
           "https://images.unsplash.com/photo-1558801875-1dff4fe605d8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -1201,6 +1215,7 @@
       {
         date: "2026-07-23",
         title: "Snæfellsnes Peninsula",
+        tags: ["⏰ Long day"],
         image:
           "https://images.unsplash.com/photo-1595742744735-415fc20ef88f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -1298,6 +1313,7 @@
       {
         date: "2026-07-25",
         title: "Reykjavik",
+        tags: ["⛴️ Ferry"],
         image:
           "https://images.unsplash.com/photo-1474690870753-1b92efa1f2d8?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
@@ -1328,6 +1344,7 @@
       {
         date: "2026-07-26",
         title: "Departure",
+        tags: ["✈️ Flight"],
         image:
           "https://images.unsplash.com/photo-1601650904409-0ba17f32926a?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
