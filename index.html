@@ -341,6 +341,7 @@
 
       <button class="tab active" data-tab="plan">Trip Plan</button>
       <button class="tab" data-tab="prep">Preparation</button>
+      <button class="tab" data-tab="photo">Photo Locations</button>
 
     </div>
 
@@ -353,6 +354,80 @@
       <div id="trip"></div>
 
     </div>
+
+    <div id="tab-photo" class="tab-content">
+      <h2>Photo Locations in Iceland</h2>
+      <div id="photo-locations"></div>
+    </div>
+
+    <script>
+      // --- PHOTO LOCATION DATA ---
+      const photoLocations = [
+        { group: "🎬 Game of Thrones", items: [
+          { place: "Þingvellir National Park", note: "Bloody Gate, Arya & Hound" },
+          { place: "Öxarárfoss", note: "Bloody Gate scenes" },
+          { place: "Kirkjufell", note: "Arrowhead Mountain" },
+          { place: "Grjótagjá", note: "Jon Snow & Ygritte cave" },
+          { place: "Dimmuborgir", note: "Wildling Camp" },
+          { place: "Þórufoss", note: "Drogon eats goat scene" },
+          { place: "Gjáin", note: "Olly's village" },
+          { place: "Stöng", note: "Wildling raid village" },
+          { place: "Svínafellsjökull", note: "Beyond the Wall glacier" },
+        ]},
+        { group: "👾 Stranger Things", items: [
+          { place: "Háifoss", note: "" },
+        ]},
+        { group: "🚀 Interstellar", items: [
+          { place: "Svínafellsjökull", note: "" },
+        ]},
+        { group: "🌌 Rogue One: A Star Wars Story", items: [
+          { place: "Reynisfjara", note: "" },
+          { place: "Hjörleifshöfði", note: "" },
+        ]},
+        { group: "🦇 Batman Begins", items: [
+          { place: "Jökulsárlón", note: "" },
+        ]},
+        { group: "🛸 Prometheus", items: [
+          { place: "Dettifoss", note: "" },
+        ]},
+        { group: "🌋 Oblivion", items: [
+          { place: "Hrossaborg", note: "" },
+          { place: "Jökulsárlón", note: "" },
+        ]},
+        { group: "🦸 Thor: The Dark World", items: [
+          { place: "Fjaðrárgljúfur", note: "" },
+        ]},
+        { group: "🧙 The Secret Life of Walter Mitty", items: [
+          { place: "Seyðisfjörður", note: "" },
+          { place: "Skógafoss", note: "" },
+        ]},
+        { group: "🎥 James Bond", items: [
+          { place: "Jökulsárlón", note: "" },
+          { place: "Diamond Beach", note: "" },
+        ]},
+        { group: "🎬 Gerua (Bollywood – Dilwale)", items: [
+          { place: "Svínafellsjökull Glacier", note: "main ice sequences" },
+          { place: "Jökulsárlón Glacier Lagoon", note: "" },
+          { place: "Diamond Beach", note: "" },
+          { place: "Vík / Reynisfjara black sand area", note: "" },
+          { place: "Some aerial glacier shots near Vatnajökull", note: "" },
+        ]},
+      ];
+
+      // --- RENDER PHOTO LOCATIONS ---
+      function renderPhotoLocations() {
+        const container = document.getElementById("photo-locations");
+        container.innerHTML = photoLocations.map(group => `
+          <h3>${group.group}</h3>
+          <ul>
+            ${group.items.map(item => `<li><strong>${item.place}</strong>${item.note ? ': ' + item.note : ''}</li>`).join('')}
+          </ul>
+        `).join('');
+      }
+      // Show on tab switch
+      document.querySelector('[data-tab="photo"]').addEventListener('click', renderPhotoLocations);
+      // Optionally render on load if tab is default
+    </script>
 
     <div id="tab-prep" class="tab-content">
       <h2>Useful links</h2>
@@ -439,7 +514,7 @@
         </div>
 
         <div class="booking-item">
-          <strong>✅ Skaftafell Glacier hike</strong><br>
+          <strong>✅ Jökulsárlón boat tour</strong><br>
           📅 July 17th - 11:20 <br>
           <a href="https://maps.app.goo.gl/cYMeiJq2y2r7WFLf8">Meeting point </a>
         </div>
@@ -1539,24 +1614,53 @@
       if (date < today) div.classList.add("past");
       if (d.date === todayStr) div.classList.add("today");
       const tags = detectTags(d);
+
+      // --- PHOTO LOCATION MATCHING ---
+      function getPhotoLocationMatches(day) {
+        const seen = new Set();
+        const matches = [];
+        for (const group of photoLocations) {
+          for (const item of group.items) {
+            for (const stop of day.stops) {
+              if (
+                stop.place &&
+                (stop.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase().includes(item.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase()) ||
+                item.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase().includes(stop.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase()))
+              ) {
+                console.log(`Match found for day ${day.title}: ${JSON.stringify(group.group)}`);
+                if (seen.has(`${group.group}-${item.place}`)) {
+                  console.log(`Already added match for ${group.group} - ${item.place}, skipping.`);
+                  continue;
+                }
+                seen.add(`${group.group}-${item.place}`);
+                matches.push({ group: group.group, place: item.place, note: item.note });
+              }
+            }
+          }
+        }
+        return matches;
+      }
+      const photoMatches = getPhotoLocationMatches(d);
+
       div.innerHTML = `
-
-                <div class="day-header">
-
-                <div>
-                  <strong>Day ${i + 1}</strong><br>
-                  <strong>${date.toDateString()}</strong><br>
-                  ${d.title}
-                  <div class="tags">
-                    ${tags.map(t => `<span class="tag ${t.class}">${t.name}</span>`).join("")}
-                  </div>
-                </div>
-
-                <div>▼</div>
-
-                </div>
-
-                <div class="day-content">
+        <div class="day-header">
+          <div>
+            <strong>Day ${i + 1}</strong><br>
+            <strong>${date.toDateString()}</strong><br>
+            ${d.title}
+            <div class="tags">
+              ${tags.map(t => `<span class="tag ${t.class}">${t.name}</span>`).join("")}
+            </div>
+          </div>
+          <div>▼</div>
+        </div>
+        <div class="day-content">
+          ${photoMatches.length > 0 ? `<div class="photo-locations-card" style="background:#222; border:1px solid #38bdf8; border-radius:8px; padding:10px 16px; margin-bottom:16px;">
+            <strong>🎬 Filming Locations:</strong>
+            <ul style="margin:0; padding-left:18px;">
+              ${photoMatches.map(m => `<li>${m.group} — <b>${m.place}</b>${m.note ? ': ' + m.note : ''}</li>`).join('')}
+            </ul>
+          </div>` : ''}
 
                 <div class="image" style="background-image:url('${d.image}')"></div>
 
