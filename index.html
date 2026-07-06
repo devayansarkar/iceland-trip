@@ -349,6 +349,7 @@
 
       <div id="todayPanel" class="today"></div>
 
+
       <div id="search"></div>
       <div id="fullTripMap"></div>
       <div id="trip"></div>
@@ -363,55 +364,78 @@
     <script>
       // --- PHOTO LOCATION DATA ---
       const photoLocations = [
-        { group: "🎬 Game of Thrones", items: [
-          { place: "Þingvellir National Park", note: "Bloody Gate, Arya & Hound" },
-          { place: "Öxarárfoss", note: "Bloody Gate scenes" },
-          { place: "Kirkjufell", note: "Arrowhead Mountain" },
-          { place: "Grjótagjá", note: "Jon Snow & Ygritte cave" },
-          { place: "Dimmuborgir", note: "Wildling Camp" },
-          { place: "Þórufoss", note: "Drogon eats goat scene" },
-          { place: "Gjáin", note: "Olly's village" },
-          { place: "Stöng", note: "Wildling raid village" },
-          { place: "Svínafellsjökull", note: "Beyond the Wall glacier" },
-        ]},
-        { group: "👾 Stranger Things", items: [
-          { place: "Háifoss", note: "" },
-        ]},
-        { group: "🚀 Interstellar", items: [
-          { place: "Svínafellsjökull", note: "" },
-        ]},
-        { group: "🌌 Rogue One: A Star Wars Story", items: [
-          { place: "Reynisfjara", note: "" },
-          { place: "Hjörleifshöfði", note: "" },
-        ]},
-        { group: "🦇 Batman Begins", items: [
-          { place: "Jökulsárlón", note: "" },
-        ]},
-        { group: "🛸 Prometheus", items: [
-          { place: "Dettifoss", note: "" },
-        ]},
-        { group: "🌋 Oblivion", items: [
-          { place: "Hrossaborg", note: "" },
-          { place: "Jökulsárlón", note: "" },
-        ]},
-        { group: "🦸 Thor: The Dark World", items: [
-          { place: "Fjaðrárgljúfur", note: "" },
-        ]},
-        { group: "🧙 The Secret Life of Walter Mitty", items: [
-          { place: "Seyðisfjörður", note: "" },
-          { place: "Skógafoss", note: "" },
-        ]},
-        { group: "🎥 James Bond", items: [
-          { place: "Jökulsárlón", note: "" },
-          { place: "Diamond Beach", note: "" },
-        ]},
-        { group: "🎬 Gerua (Bollywood – Dilwale)", items: [
-          { place: "Svínafellsjökull Glacier", note: "main ice sequences" },
-          { place: "Jökulsárlón Glacier Lagoon", note: "" },
-          { place: "Diamond Beach", note: "" },
-          { place: "Vík / Reynisfjara black sand area", note: "" },
-          { place: "Some aerial glacier shots near Vatnajökull", note: "" },
-        ]},
+        {
+          group: "🎬 Game of Thrones", items: [
+            { place: "Þingvellir National Park", note: "Bloody Gate, Arya & Hound" },
+            { place: "Öxarárfoss", note: "Bloody Gate scenes" },
+            { place: "Kirkjufell", note: "Arrowhead Mountain" },
+            { place: "Grjótagjá", note: "Jon Snow & Ygritte cave" },
+            { place: "Dimmuborgir", note: "Wildling Camp" },
+            { place: "Þórufoss", note: "Drogon eats goat scene" },
+            { place: "Gjáin", note: "Olly's village" },
+            { place: "Stöng", note: "Wildling raid village" },
+            { place: "Svínafellsjökull", note: "Beyond the Wall glacier" },
+          ]
+        },
+        {
+          group: "👾 Stranger Things", items: [
+            { place: "Háifoss", note: "" },
+          ]
+        },
+        {
+          group: "🚀 Interstellar", items: [
+            { place: "Svínafellsjökull", note: "" },
+          ]
+        },
+        {
+          group: "🌌 Rogue One: A Star Wars Story", items: [
+            { place: "Reynisfjara", note: "" },
+            { place: "Hjörleifshöfði", note: "" },
+          ]
+        },
+        {
+          group: "🦇 Batman Begins", items: [
+            { place: "Jökulsárlón", note: "" },
+          ]
+        },
+        {
+          group: "🛸 Prometheus", items: [
+            { place: "Dettifoss", note: "" },
+          ]
+        },
+        {
+          group: "🌋 Oblivion", items: [
+            { place: "Hrossaborg", note: "" },
+            { place: "Jökulsárlón", note: "" },
+          ]
+        },
+        {
+          group: "🦸 Thor: The Dark World", items: [
+            { place: "Fjaðrárgljúfur", note: "" },
+          ]
+        },
+        {
+          group: "🧙 The Secret Life of Walter Mitty", items: [
+            { place: "Seyðisfjörður", note: "" },
+            { place: "Skógafoss", note: "" },
+          ]
+        },
+        {
+          group: "🎥 James Bond", items: [
+            { place: "Jökulsárlón", note: "" },
+            { place: "Diamond Beach", note: "" },
+          ]
+        },
+        {
+          group: "🎬 Gerua (Bollywood – Dilwale)", items: [
+            { place: "Svínafellsjökull", note: "main ice sequences" },
+            { place: "Jökulsárlón", note: "" },
+            { place: "Diamond Beach", note: "" },
+            { place: "Reynisfjara", note: "" },
+            { place: "Some aerial glacier shots near Vatnajökull", note: "" },
+            { place: "Solheimasandur", note: "" },
+          ]
+        },
       ];
 
       // --- RENDER PHOTO LOCATIONS ---
@@ -426,7 +450,7 @@
       }
       // Show on tab switch
       document.querySelector('[data-tab="photo"]').addEventListener('click', renderPhotoLocations);
-      // Optionally render on load if tab is default
+
     </script>
 
     <div id="tab-prep" class="tab-content">
@@ -542,7 +566,7 @@
   <footer>Campervan Journey</footer>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
   <script>
     /* TRIP DATES */
 
@@ -861,11 +885,11 @@
       {
         date: "2026-07-14",
         title: "Westman Islands",
-        tags: ["⏰ Long day","⛴️ Ferry", "🐟 Beluga"],
+        tags: ["⏰ Long day", "⛴️ Ferry", "🐟 Beluga"],
         image:
           "https://images.unsplash.com/photo-1668996301291-ad34042f54e3?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         stops: [
-            {
+          {
             time: "08:00",
             place: "Drive to Landeyjahöfn [MUST]",
             duration: "4 hrs",
@@ -880,7 +904,7 @@
             lat: 63.5,
             lon: -20.2,
             notes:
-            "- Ferry to Heimaey (pre-booking recommended for campervan)\n- Beluga Sanctuary\n- Þjóðhátíð Amphitheatre\n- Stafsnes\n- Beautiful Puffin and Shore View\n- Flakkarinn Scenic Overlook",
+              "- Ferry to Heimaey (pre-booking recommended for campervan)\n- Beluga Sanctuary\n- Þjóðhátíð Amphitheatre\n- Stafsnes\n- Beautiful Puffin and Shore View\n- Flakkarinn Scenic Overlook",
           },
           {
             time: "20:30",
@@ -1215,7 +1239,7 @@
             lon: -16.911,
             notes: "- Explore lava formations",
           },
-                    {
+          {
             time: "18:30",
             place: "Forest lagoon  or Earth Lagoon (only if there is enough time)",
             lat: 65.683,
@@ -1625,9 +1649,8 @@
               if (
                 stop.place &&
                 (stop.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase().includes(item.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase()) ||
-                item.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase().includes(stop.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase()))
+                  item.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase().includes(stop.place.normalize('NFD').replace(/[^\w\s]/gi, '').toLowerCase()))
               ) {
-                console.log(`Match found for day ${day.title}: ${JSON.stringify(group.group)}`);
                 if (seen.has(`${group.group}-${item.place}`)) {
                   console.log(`Already added match for ${group.group} - ${item.place}, skipping.`);
                   continue;
@@ -1927,6 +1950,7 @@
     }
 
     renderFullTripRoute();
+
   </script>
 </body>
 
